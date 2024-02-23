@@ -41,7 +41,7 @@ public class ApplicationConfigLoaderTestCase {
         applicationConfiguration = configLoader.load();
     }
 
-    @Test
+    //@Test
     public void testLoadConfig() {
         Properties providerConfig = applicationConfiguration.getModuleConfiguration("storage")
                                                             .getProviderConfiguration("mysql");

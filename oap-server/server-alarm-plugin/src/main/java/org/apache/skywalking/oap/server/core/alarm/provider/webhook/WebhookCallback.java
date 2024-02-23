@@ -27,6 +27,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import org.apache.skywalking.oap.server.core.alarm.provider.AlarmRulesWatcher;
+import org.apache.skywalking.oap.server.core.alarm.provider.RequestBoAdapter;
+import org.apache.skywalking.oap.server.core.alarm.provider.SmsRequestBo;
 import org.apache.skywalking.oap.server.library.util.CollectionUtils;
 
 /**
@@ -54,9 +56,19 @@ public class WebhookCallback extends HttpAlarmCallback {
                 messages)) {
                 continue;
             }
+            /*for(var message : messages){
+            }*/
             for (final var url : setting.getUrls()) {
                 try {
-                    post(URI.create(url), gson.toJson(messages), Map.of());
+                    // url is sms or email
+                    /*if(url.contains("sms")){
+                        // sms url
+                    }else {
+                        // email url
+                    }*/
+                    RequestBoAdapter adapter = new RequestBoAdapter();
+                    SmsRequestBo smsRequestBo = adapter.parseSmsBody(setting.getBody(),messages.get(0));
+                    post(URI.create(url), gson.toJson(smsRequestBo), Map.of());
                 } catch (Exception e) {
                     log.error("Failed to send alarm message to Webhook: {}", url, e);
                 }

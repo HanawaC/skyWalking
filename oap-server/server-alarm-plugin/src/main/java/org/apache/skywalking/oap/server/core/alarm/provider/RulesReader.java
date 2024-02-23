@@ -158,6 +158,12 @@ public class RulesReader {
             if (urls != null) {
                 settings.getUrls().addAll(urls);
             }
+
+            String method = (String) config.get("method");
+            settings.setMethod(method);
+            String body = (String) config.get("body");
+            settings.setBody(body);
+
             rules.getWebhookSettingsMap().put(settings.getFormattedName(), settings);
             if (settings.isDefault()) {
                 this.defaultHooks.add(settings.getFormattedName());

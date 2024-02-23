@@ -26,27 +26,40 @@ rules:
 #    silence-period: 10
 #    message: Successful rate of endpoint {name} is lower than 75%
   service_resp_time_rule:
-    expression: sum(service_resp_time > 1000) >= 1
+    expression: sum(service_resp_time > 1) >= 1
+    metrics-name: service_resp_time
+    threshold: 5
+    op: ">"
+    period: 1
+    count: 1
+    message: Response time of service {name} is more than 1ms.
+#    expression: sum(service_resp_time > 1000) >= 1
     # [Optional] Default, match all services in this metrics
-    include-names:
-      - dubbox-provider
-      - dubbox-consumer
-    period: 10
-    tags:
-      level: WARNING
+#    include-names:
+#      - dubbox-provider
+#      - dubbox-consumer
+#    period: 10
+#    tags:
+#      level: WARNING
     # Binding the specific names of the hooks when the alarm is triggered. The name format is {hookType}.{hookName}
 #    hooks:
 #      - "slack.custom1"
 #      - "pagerduty.custom1"
 
 hooks:
-#  webhook:
-#    default:
-#      # If true, this hook will apply on all rules, unless a rule has its own specific hook. Could have more than one default hooks in the same hook type.
-#      is-default: true
-#      urls:
-#        - http://127.0.0.1/notify/
-#        - http://127.0.0.1/go-wechat/
+  webhook:
+    default:
+      # If true, this hook will apply on all rules, unless a rule has its own specific hook. Could have more than one default hooks in the same hook type.
+      is-default: true
+      urls:
+        - http://localhost:8889/
+      method: POST
+      headers:
+        Content-Type: application/json
+      body: |
+        {
+          "name": "hello"
+        }
 #
 #  gRPC:
 #    default:
@@ -109,7 +122,7 @@ hooks:
 #          }
 #        }
 #      webhooks:
-#        - https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=dummy_key
+#        - https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=db405aa0-ac8b-4f2d-852e-6ddf836cda38
 #
 #  dingtalk:
 #    default:
@@ -122,6 +135,7 @@ hooks:
 #          }
 #        }
 #      webhooks:
+
 #        - url: https://oapi.dingtalk.com/robot/send?access_token=dummy_token
 #          secret: dummysecret
 #
@@ -155,3 +169,29 @@ hooks:
 #          group-ids: "dummy_group_id"
 #          # make a name you like for the robot, it will display in group
 #          robot-name: robot
+  # 邮件配置
+#  mail:
+#    # 邮件服务器地址
+#    serverHost: smtp.qq.com # QQ 邮箱的 SMTP 服务器地址
+#    # 邮件服务器端口
+#    serverPort: 465  # QQ 邮箱的 SMTP 服务器端口
+#    # 发件人邮箱
+#    from: 385410659@qq.com  # 你的 QQ 邮箱账户
+#    # 发件人名称
+#    fromPerson: Skywalking  # 发件人名称，可以自定义
+#    # 邮件服务器用户名
+#    user: 385410659@qq.com  # 你的 QQ 邮箱账户
+#    # 邮件服务器密码
+#    pass: qzfkwcleeaghbiii  # 你的 QQ 邮箱密码或授权码
+#    # 接收人邮箱
+#    recipients:
+#      - 385410659@qq.com  # 接收邮件的邮箱地址
+#    # 邮件内容
+#    content:
+#      # 邮件主题
+#      subject: SkyWalking通知
+#      # 邮件正文
+#      body: |
+#        尊敬的用户，
+#        这是一封来自SkyWalking的通知邮件。
+#        欢迎使用我们的服务！
